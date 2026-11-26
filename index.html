@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lula & Bolsonaro: Desafio dos Poços</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--tx:#f8fafc;--mut:#94a3b8}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,Segoe UI,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;user-select:none}
+header,footer{width:100%;max-width:960px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:var(--panel);padding:8px 12px;border-radius:10px;font-size:14px;box-sizing:border-box}
+footer{font-size:12px;color:var(--mut)}
+.r{color:#f87171;font-weight:700}.g{color:#4ade80;font-weight:700}.p{color:#c084fc;font-weight:700}
+button{background:#f59e0b;color:#111;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer}
+#wrap{position:relative;width:100%;max-width:960px}
+canvas{width:100%;display:block;border-radius:10px;background:#0b1220}
+#ov{position:absolute;inset:0;background:rgba(2,6,23,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:10px;gap:12px}
+#ov h1{margin:0;color:#fbbf24;font-size:clamp(20px,4vw,32px)}#ov p{margin:0;max-width:540px;line-height:1.5;color:#cbd5e1;white-space:pre-line}
+.scr{position:absolute;inset:0;background:rgba(2,6,23,.93);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:16px;border-radius:10px;gap:12px;overflow:auto;box-sizing:border-box}
+.scr>:first-child{margin-top:auto}.scr>:last-child{margin-bottom:auto}
+.scr h1{margin:0;color:#fbbf24;font-size:clamp(24px,5vw,44px)}.scr h2,.scr h3{margin:0}.scr p{margin:0;color:#cbd5e1;max-width:520px;line-height:1.5}
+.big{font-size:20px;padding:14px 32px;min-width:260px}.alt{background:#8b5cf6;color:#fff}
+.tabs{display:flex;gap:8px}.tabs .on{outline:3px solid #fff}
+#shb{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center;width:100%}
+#pv{background:#0b1220;border-radius:12px;border:2px solid #334155;width:150px;height:150px;flex:none}
+#pvw{display:flex;flex-direction:column;align-items:center;gap:8px;width:170px}#pvw button{width:100%}#pvw button:disabled{opacity:.45;cursor:default}
+#pcost{font-size:13px;color:#fbbf24;min-height:18px}.it.pv{box-shadow:0 0 0 2px #38bdf8}
+#shc{flex:1;min-width:260px;max-width:560px;text-align:left}
+.grid{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.it{background:#334155;color:#fff;font-size:12px;display:flex;flex-direction:column;gap:2px;min-width:92px;padding:6px 8px;text-align:left}
+.it small{color:#fbbf24}.it.eq{outline:2px solid #4ade80}.it.no{outline:2px solid #ef4444}
+</style>
+</head>
+<body>
+<header>
+<div><span class="r">Lula</span> ⭐ <b id="gr">0/0</b></div>
+<div><b id="ln">Fase 1</b> · ⏱ <b id="tm">0:00</b> · 💀 <b id="dc">0</b></div>
+<button id="rs">🔄 Reiniciar fase</button><button id="hm">☰ Menu</button>
+<div><span class="g">Bolsonaro</span> 🇧🇷 <b id="gg">0/0</b></div>
+</header>
+<div id="wrap">
+<canvas id="c" width="960" height="576"></canvas>
+<div id='mn' class='scr'><h1>LULA & BOLSONARO</h1><p>Desafio dos Poços</p><button id='mj' class='big'>▶ JOGAR</button><button id='mp' class='big alt'>👕 PERSONALIZAR</button><p>💎 <b id='mb2'>0</b> pontos guardados<br><span class='r'>Lula</span>: W A D · S alavanca &nbsp;|&nbsp; <span class='g'>Bolsonaro</span>: ← ↑ → · ↓ alavanca</p></div>
+<div id='sh' class='scr' style='display:none'><h2>👕 Personalizar · 💎 <span id='bk'>0</span></h2><div class='tabs'><button id='tr' class='on'>Lula</button><button id='tg'>Bolsonaro</button></div><div id='shb'><div id='pvw'><canvas id='pv' width='150' height='150'></canvas><div id='pcost'></div><button id='pbuy'>Equipar</button><button id='pund' style='background:#475569;color:#fff'>↩ Desfazer</button></div><div id='shc'></div></div><button id='sbk'>⬅ Voltar ao menu</button></div>
+<div id="ov"><h1 id="ot">LULA & BOLSONARO</h1><p id="od"></p><button id="ob">JOGAR</button></div>
+</div>
+<footer>
+<span><span class="r">Ácido vermelho</span>: só o Lula · <span class="g">Ácido verde</span>: só o Bolsonaro · <span class="p">Veneno</span>: mata os dois</span>
+<span>Alavanca: S / ↓ · Caixas pesam o bastante para apertar placas e tapar poços</span>
+</footer>
+<script>
+const T=32,C=30,R=18,cv=document.getElementById('c'),x=cv.getContext('2d');
+// itens: [tipo,l1,c1,l2,c2]  # parede | R/V ácidos | X veneno | * + gemas | e f saídas | 1 2 placas | A B C portões | l alavanca | b caixa
+const LV=[
+{n:'Fase 1 · Primeiros passos',par:45,s:[1,15],t:[2,15],it:[
+['e',3,2],['f',3,3],['#',4,0,4,5],['#',7,8,7,18],['#',10,21,10,26],['#',13,14,13,20],
+['R',16,8,16,11],['X',16,12],['V',16,24,16,27],
+['*',6,10],['+',6,16],['*',9,22],['+',9,25],['*',12,16],['+',12,18],['*',14,9],['+',14,25]]},
+{n:'Fase 2 · Um ajuda o outro',par:70,s:[1,15],t:[2,15],it:[
+['e',6,25],['f',6,26],['#',7,22,7,28],['#',10,12,12,12],['A',13,12,15,12],['1',15,9],['1',15,14],
+['V',16,5,16,6],['R',16,15,16,16],['X',16,17,16,18],['#',13,20,13,26],['#',10,13,10,18],
+['*',6,23],['+',6,28],['*',12,22],['+',12,24],['*',9,15],['+',9,17],['*',14,15],['+',14,5]]},
+{n:'Fase 3 · O laboratório',par:100,s:[1,15],t:[2,15],it:[
+['#',9,10,12,10],['A',13,10,15,10],['1',15,7],['1',15,12],['R',16,4,16,5],['R',16,14,16,15],['X',16,18,16,19],['V',16,24,16,26],
+['#',13,17,13,22],['#',10,23,10,28],['2',9,27],['#',7,16,7,21],['#',4,22,4,28],['B',1,21,3,21],['2',3,24],['e',3,26],['f',3,27],
+['*',3,23],['+',3,28],['*',12,19],['+',12,21],['*',9,24],['+',9,26],['*',6,17],['+',6,20],['*',14,15],['+',14,25],['*',14,4]]},
+{n:'Fase 4 · Caixa e alavanca',par:90,s:[1,15],t:[2,15],it:[
+['b',15,5],['1',15,8],['#',9,11,12,11],['A',13,11,15,11],
+['X',16,14,16,15],['V',16,24,16,26],['#',13,20,13,26],['#',10,13,10,19],['l',9,16],
+['#',7,21,7,28],['C',3,21,6,21],['e',6,25],['f',6,26],
+['*',14,3],['+',14,6],['*',12,23],['+',12,25],['*',9,14],['+',9,18],['*',6,24],['+',6,28],['*',14,18],['+',14,13]]},
+{n:'Fase 5 · Balsa e elevador',par:75,s:[1,15],t:[2,15],
+mp:[{c:7,r:15.6,w:3,dx:10,dy:0,sp:1.6,lev:false},{c:24,r:15.6,w:3,dx:0,dy:-7.6,sp:2,lev:true}],it:[
+['R',16,4,16,5],['X',16,9,16,19],['l',15,21],['#',8,20,8,23],['e',7,21],['f',7,22],
+['*',13,12],['+',13,16],['*',14,3],['+',14,28],['*',7,23],['+',7,20]]}
+];
+let g,P,BX,MP,open,tot,state='menu',lv=0,frame=0,tm=0,dl=0,dt=0,best=[];
+const keys={};
+addEventListener('keydown',e=>{keys[e.code]=1;if(/^(Arrow|Key[WASD]|Space)/.test(e.code))e.preventDefault()});
+addEventListener('keyup',e=>keys[e.code]=0);
+const CTL={r:{l:'KeyA',r:'KeyD',u:'KeyW',d:'KeyS'},g:{l:'ArrowLeft',r:'ArrowRight',u:'ArrowUp',d:'ArrowDown'}};
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+const hit2=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+function load(i,fresh){
+ const d=LV[i];g=Array.from({length:R},(_,r)=>Array.from({length:C},(_,c)=>(r==0||r>=16||c==0||c==C-1)?'#':'.'));
+ d.it.forEach(([ch,r1,c1,r2=r1,c2=c1])=>{for(let r=r1;r<=r2;r++)for(let c=c1;c<=c2;c++)g[r][c]=ch});
+ BX=[];g.forEach((row,r)=>row.forEach((ch,c)=>{if(ch=='b'){row[c]='.';BX.push({x:c*T+1,y:r*T+2,w:30,h:30,vx:0,vy:0,on:false})}}));
+ MP=(d.mp||[]).map(m=>({x0:m.c*T,y0:m.r*T,x1:(m.c+m.dx)*T,y1:(m.r+m.dy)*T,x:m.c*T,y:m.r*T,w:m.w*T,h:12,sp:m.sp,lev:m.lev,dir:1}));
+ const mk=(col,s)=>({col,x:s[0]*T+3,y:(s[1]+1)*T-28,w:26,h:28,vx:0,vy:0,on:false,got:0,at:false,dn:false});
+ P=[mk('r',d.s),mk('g',d.t)];open={A:false,B:false,C:false};
+ tot={r:0,g:0};g.flat().forEach(ch=>{if(ch=='*')tot.r++;if(ch=='+')tot.g++});
+ tm=0;if(fresh)dl=0;
+ document.getElementById('ln').textContent=d.n;ui();
+}
+const solid=(c,r)=>{const ch=(g[r]||[])[c];return ch===undefined||ch=='#'||(ch=='A'&&!open.A)||(ch=='B'&&!open.B)||(ch=='C'&&!open.C)};
+function hits(p){const o=[];for(let r=Math.floor(p.y/T);r<=Math.floor((p.y+p.h-.01)/T);r++)for(let c=Math.floor(p.x/T);c<=Math.floor((p.x+p.w-.01)/T);c++)o.push([c,r,(g[r]||[])[c]]);return o}
+const free=e=>!hits(e).some(([c,r])=>solid(c,r));
+// plataformas móveis: só se pisa por cima
+function platY(e,prevB,dy){if(dy<0)return;
+ for(const m of MP)if(e.x<m.x+m.w&&e.x+e.w>m.x&&e.y+e.h>=m.y&&prevB<=m.y+8&&e.y+e.h<=m.y+m.h+16){e.y=m.y-e.h;e.vy=0;e.on=true}}
+function boxStep(b){
+ b.vy=Math.min(b.vy+.5,12);const prevB=b.y+b.h,dy=b.vy;b.y+=dy;
+ for(const [c,r] of hits(b))if(solid(c,r)){b.y=r*T-b.h;b.vy=0;break}
+ platY(b,prevB,dy);
+}
+function step(p,o){
+ const k=CTL[p.col];
+ if(keys[k.l])p.vx-=.9;if(keys[k.r])p.vx+=.9;
+ if(keys[k.u]&&p.on){p.vy=-11.2;p.on=false}
+ p.vx*=.8;p.vy=Math.min(p.vy+.5,13);
+ const dx=p.vx;p.x+=dx;
+ if(dx!==0){
+  for(const b of BX)if(hit2(p,b)){b.x+=dx;if(!free(b)||BX.some(q=>q!=b&&hit2(q,b)))b.x-=dx;p.x=dx>0?b.x-p.w-.01:b.x+b.w+.01;p.vx*=.6}
+  for(const [c,r] of hits(p))if(solid(c,r)){p.x=dx>0?c*T-p.w-.01:(c+1)*T;p.vx=0;break}
+ }
+ const prevB=p.y+p.h,dy=p.vy;p.y+=dy;p.on=false;
+ for(const [c,r] of hits(p))if(solid(c,r)){if(dy>0){p.y=r*T-p.h;p.on=true}else if(dy<0)p.y=(r+1)*T;p.vy=0;break}
+ platY(p,prevB,dy);
+ for(const b of BX)if(hit2(p,b)){if(dy>=0&&prevB<=b.y+8){p.y=b.y-p.h;p.vy=0;p.on=true}else if(dy<0){p.y=b.y+b.h;p.vy=0}}
+ if(hit2(p,o)&&p.vy>=0&&prevB<=o.y+10){p.y=o.y-p.h;p.vy=0;p.on=true}
+}
+function die(why){
+ if(state!='play')return;state='dead';dl++;dt++;
+ show('FIM DE JOGO',why+'\n💀 Mortes nesta fase: '+dl,'TENTAR DE NOVO');
+}
+function update(){
+ const c0=open.C;open={A:false,B:false,C:c0};
+ for(let r=0;r<R;r++)for(let c=0;c<C;c++){const ch=g[r][c];if(ch=='1'||ch=='2'){
+  const pr={x:c*T,y:r*T+24,w:T,h:8};
+  if(P.some(p=>hit2(p,pr))||BX.some(b=>hit2(b,pr)))open[ch=='1'?'A':'B']=true}}
+ P.forEach(p=>{const d=keys[CTL[p.col].d];if(d&&!p.dn&&hits(p).some(h=>h[2]=='l'))open.C=!open.C;p.dn=d});
+ MP.forEach(m=>{
+  const rid=[...P,...BX].filter(e=>e.x<m.x+m.w&&e.x+e.w>m.x&&Math.abs(e.y+e.h-m.y)<=3);
+  const on=m.lev?open.C:m.dir>0,tx=on?m.x1:m.x0,ty=on?m.y1:m.y0,ox=m.x,oy=m.y;
+  m.x+=Math.sign(tx-m.x)*Math.min(m.sp,Math.abs(tx-m.x));m.y+=Math.sign(ty-m.y)*Math.min(m.sp,Math.abs(ty-m.y));
+  if(!m.lev&&m.x==tx&&m.y==ty)m.dir*=-1;
+  rid.forEach(e=>{e.x+=m.x-ox;e.y+=m.y-oy});
+ });
+ BX.forEach(boxStep);
+ P.forEach((p,i)=>step(p,P[1-i]));
+ P.forEach(p=>{
+  p.at=false;const nm=p.col=='r'?'Lula':'Bolsonaro';
+  if(p.y>R*T)die(nm+' caiu para fora do mapa!');
+  hits(p).forEach(([c,r,ch])=>{
+   const deep=p.y+p.h>r*T+10;
+   if(ch=='X'&&deep)die(nm+' caiu no veneno! Esse mata todo mundo.');
+   if(ch=='R'&&p.col=='g'&&deep)die('Bolsonaro se dissolveu no ácido vermelho!');
+   if(ch=='V'&&p.col=='r'&&deep)die('Lula se dissolveu no ácido verde!');
+   if(ch=='*'&&p.col=='r'){g[r][c]='.';p.got++}
+   if(ch=='+'&&p.col=='g'){g[r][c]='.';p.got++}
+   if((ch=='e'&&p.col=='r')||(ch=='f'&&p.col=='g'))p.at=true;
+  });
+ });
+ if(state=='play')tm+=1/60;
+ ui();
+ if(state=='play'&&P[0].at&&P[1].at){
+  state='win';let s=1;
+  const all=P[0].got==tot.r&&P[1].got==tot.g;if(all)s++;if(tm<=LV[lv].par)s++;
+  best[lv]=Math.max(best[lv]||0,s);const gain=P[0].got+P[1].got;SAVE.bank+=gain;persist();
+  const info='⏱ '+fmt(tm)+' (meta '+fmt(LV[lv].par)+') · 💀 '+dl+' · 💎 '+(P[0].got+P[1].got)+'/'+(tot.r+tot.g);
+  const st='⭐'.repeat(s)+'☆'.repeat(3-s)+'\n+'+gain+' 💎 · Banco: '+SAVE.bank+' 💎'+'\n'+info+'\n⭐ concluir · ⭐ todas as moedas · ⭐ tempo dentro da meta';
+  if(lv<LV.length-1)show('FASE CONCLUÍDA!',st,'PRÓXIMA FASE');
+  else show('VOCÊS ZERARAM!',st+'\n\nTotal: '+best.reduce((a,b)=>a+(b||0),0)+'/'+LV.length*3+' estrelas · '+dt+' mortes','JOGAR DE NOVO');
+ }
+}
+function ui(){
+ document.getElementById('gr').textContent=P[0].got+'/'+tot.r;document.getElementById('gg').textContent=P[1].got+'/'+tot.g;
+ document.getElementById('tm').textContent=fmt(tm);document.getElementById('dc').textContent=dt;
+}
+const OV=document.getElementById('ov');
+function show(t,d,b){document.getElementById('ot').textContent=t;document.getElementById('od').textContent=d;document.getElementById('ob').textContent=b;OV.style.display='flex'}
+document.getElementById('ob').onclick=()=>{
+ if(state=='win'){if(lv==LV.length-1){lv=0;dt=0;best=[]}else lv++;load(lv,true)}
+ else if(state=='menu'){dt=0;load(lv,true)}
+ else load(lv,false);
+ state='play';OV.style.display='none'};
+document.getElementById('rs').onclick=()=>{if(state=='menu')return;load(lv,false);state='play';OV.style.display='none'};
+// ---- desenho ----
+function draw(){
+ frame++;x.fillStyle='#0b1220';x.fillRect(0,0,960,576);
+ const w=frame*.08;
+ for(let r=0;r<R;r++)for(let c=0;c<C;c++){
+  const ch=g[r][c],X=c*T,Y=r*T;
+  if(ch=='#'){x.fillStyle='#334155';x.fillRect(X,Y,T,T);x.fillStyle='#475569';x.fillRect(X,Y,T,3);x.strokeStyle='#1e293b';x.strokeRect(X+.5,Y+.5,T-1,T-1)}
+  else if(ch=='R'||ch=='V'||ch=='X'){
+   const col=ch=='R'?['#dc2626','#fca5a5']:ch=='V'?['#16a34a','#86efac']:['#7e22ce','#d8b4fe'];
+   x.fillStyle=col[0];x.fillRect(X,Y+10,T,T-10);x.fillStyle=col[1];x.beginPath();x.moveTo(X,Y+14);
+   for(let i=0;i<=T;i+=4)x.lineTo(X+i,Y+10+Math.sin(w+(X+i)*.12)*2.5);
+   x.lineTo(X+T,Y+16);x.lineTo(X,Y+16);x.fill();
+   if(ch=='X'){x.fillStyle='#e9d5ff';const by=Y+26-((frame*.5+c*7)%14);x.beginPath();x.arc(X+8+(c%3)*7,by,2,0,7);x.fill();x.font='12px sans-serif';x.fillText('☠',X+10,Y+28)}
+  }
+  else if(ch=='A'||ch=='B'||ch=='C'){
+   const col=ch=='A'?'#f59e0b':ch=='B'?'#06b6d4':'#ec4899',o=open[ch];
+   if(o){x.strokeStyle=col;x.globalAlpha=.35;x.strokeRect(X+4.5,Y+.5,T-9,T-1);x.globalAlpha=1}
+   else{x.fillStyle=col;x.fillRect(X+4,Y,T-8,T);x.fillStyle='#0b1220';for(let i=4;i<T;i+=8)x.fillRect(X+4,Y+i,T-8,2)}
+  }
+  else if(ch=='1'||ch=='2'){
+   const col=ch=='1'?'#f59e0b':'#06b6d4',on=ch=='1'?open.A:open.B;
+   x.fillStyle='#475569';x.fillRect(X+2,Y+T-5,T-4,5);x.fillStyle=col;x.fillRect(X+4,Y+T-(on?7:12),T-8,on?3:8);
+  }
+  else if(ch=='l'){
+   x.fillStyle='#475569';x.fillRect(X+7,Y+24,18,8);
+   const hx=X+16+(open.C?11:-11);x.strokeStyle='#cbd5e1';x.lineWidth=4;x.beginPath();x.moveTo(X+16,Y+26);x.lineTo(hx,Y+10);x.stroke();
+   x.fillStyle=open.C?'#4ade80':'#ec4899';x.beginPath();x.arc(hx,Y+10,5,0,7);x.fill();
+  }
+  else if(ch=='*'){
+   // Estrela do PT (Lula)
+   const cy=Y+16+Math.sin(w+c)*2;
+   x.save();x.translate(X+16,cy);x.fillStyle='#dc2626';x.beginPath();
+   for(let i=0;i<5;i++){x.lineTo(Math.cos((18+i*72)*Math.PI/180)*9,-Math.sin((18+i*72)*Math.PI/180)*9);x.lineTo(Math.cos((54+i*72)*Math.PI/180)*4,-Math.sin((54+i*72)*Math.PI/180)*4)}
+   x.closePath();x.fill();x.strokeStyle='#fef08a';x.lineWidth=1.2;x.stroke();x.restore();
+  }
+  else if(ch=='+'){
+   // Bandeira do Brasil (Bolsonaro)
+   const cy=Y+16+Math.sin(w+c)*2;
+   x.save();x.translate(X+7,cy-6);
+   x.fillStyle='#16a34a';x.fillRect(0,0,18,13);
+   x.fillStyle='#facc15';x.beginPath();x.moveTo(9,1);x.lineTo(17,6.5);x.lineTo(9,12);x.lineTo(1,6.5);x.closePath();x.fill();
+   x.fillStyle='#1d4ed8';x.beginPath();x.arc(9,6.5,3,0,Math.PI*2);x.fill();
+   x.restore();
+  }
+  else if(ch=='e'||ch=='f'){
+   const rd=ch=='e';x.fillStyle=rd?'#991b1b':'#166534';x.fillRect(X+2,Y-4,T-4,T+4);x.strokeStyle=rd?'#f87171':'#4ade80';x.lineWidth=2;x.strokeRect(X+2,Y-4,T-4,T+4);
+   x.fillStyle='#fff';x.font='bold 9px sans-serif';x.textAlign='center';x.fillText(rd?'LULA':'BOLSO',X+16,Y+14);x.textAlign='left';
+  }
+ }
+ MP.forEach(m=>{x.fillStyle='#94a3b8';x.fillRect(m.x,m.y,m.w,m.h);x.fillStyle='#334155';for(let i=6;i<m.w-6;i+=14)x.fillRect(m.x+i,m.y+3,7,6);x.strokeStyle='#e2e8f0';x.lineWidth=1.5;x.strokeRect(m.x+.5,m.y+.5,m.w-1,m.h-1)});
+ BX.forEach(b=>{x.fillStyle='#b45309';x.fillRect(b.x,b.y,b.w,b.h);x.strokeStyle='#78350f';x.lineWidth=3;x.strokeRect(b.x+1.5,b.y+1.5,b.w-3,b.h-3);x.beginPath();x.moveTo(b.x+3,b.y+3);x.lineTo(b.x+b.w-3,b.y+b.h-3);x.moveTo(b.x+b.w-3,b.y+3);x.lineTo(b.x+3,b.y+b.h-3);x.stroke()});
+ P.forEach(p=>drawChar(x,p.x+p.w/2,p.y+p.h/2,p.col,p.vx,frame));
+}
+// ---- menu, loja e personalização ----
+const KEY='lula-bolso-v1';
+let SAVE={bank:0,own:{},eq:{r:{c:'c0',h:'h0',a:'a0'},g:{c:'c0',h:'h0',a:'a0'}}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.eq&&s.eq.r&&s.eq.g)SAVE=s}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(SAVE))}catch(e){}};
+const CAT={
+ c:{n:'Cores',it:[['c0','Padrão',0],['c1','Dourado',15,'#f59e0b','#fde68a'],['c2','Oceano',15,'#0ea5e9','#bae6fd'],['c3','Rosa',15,'#ec4899','#fbcfe8'],['c4','Galáxia',20,'#6d28d9','#ddd6fe'],['c5','Arco-íris',40,'rainbow']]},
+ h:{n:'Chapéus',it:[['h0','Padrão',0],['h1','Boné',10],['h2','Cartola',10],['h3','Orelhas de gato',15],['h4','Chapéu de mago',20],['h5','Coroa',25]]},
+ a:{n:'Acessórios',it:[['a0','Nenhum',0],['a1','Óculos escuros',10],['a2','Bigode',8],['a3','Gravata borboleta',8],['a4','Capa',20]]}
+};
+const price=id=>{for(const k in CAT){const f=CAT[k].it.find(i=>i[0]==id);if(f)return f[2]}return 0};
+const owned=id=>price(id)==0||SAVE.own[id];
+function drawChar(c,cx,cy,col,vx,fr,eo){
+ const e=eo||SAVE.eq[col],sk=CAT.c.it.find(i=>i[0]==e.c)||CAT.c.it[0];
+ let b=col=='r'?'#ef4444':'#10b981',f=col=='r'?'#f5d0a9':'#f8c89b';
+ if(sk[3]=='rainbow'){const h=(fr*3)%360;b='hsl('+h+',80%,55%)'}else if(sk[3]){b=sk[3];f=sk[4]}
+ c.save();
+ // Capa (a4)
+ if(e.a=='a4'){const l=-(vx||0)*3;c.fillStyle='#4338ca';c.beginPath();c.moveTo(cx-11,cy+2);c.lineTo(cx+11,cy+2);c.lineTo(cx+9+l,cy+22);c.lineTo(cx-9+l,cy+22);c.fill()}
+ // Contorno temático
+ c.fillStyle=b;c.beginPath();c.arc(cx,cy,16,0,Math.PI*2);c.fill();
+ // Rosto base
+ c.fillStyle=f;c.beginPath();c.arc(cx,cy+1,12.5,0,Math.PI*2);c.fill();
+ const d=vx>.3?1.8:vx<-.3?-1.8:0;
+ if(col=='r'){
+  // LULA: Barba e cabelo grisalho
+  c.fillStyle='#e2e8f0';
+  c.beginPath();c.arc(cx,cy+2.5,12.5,0.2*Math.PI,0.8*Math.PI);c.fill();
+  c.beginPath();c.arc(cx,cy-3,12.7,1.1*Math.PI,1.9*Math.PI);c.fill();
+  // Olhos
+  c.fillStyle='#1e293b';c.beginPath();c.arc(cx-4+d,cy-1.5,1.8,0,Math.PI*2);c.arc(cx+4+d,cy-1.5,1.8,0,Math.PI*2);c.fill();
+  // Nariz
+  c.fillStyle='#e2a87c';c.beginPath();c.arc(cx+d,cy+1,2.4,0,Math.PI*2);c.fill();
+  // Sorriso
+  c.strokeStyle='#991b1b';c.lineWidth=1.8;c.beginPath();c.arc(cx+d/2,cy+3.5,5,0.15*Math.PI,0.85*Math.PI);c.stroke();
+ } else {
+  // BOLSONARO: Cabelo castanho repartido
+  c.fillStyle='#473223';
+  c.beginPath();c.arc(cx,cy-2.5,12.7,1.05*Math.PI,1.95*Math.PI);c.fill();
+  c.fillRect(cx-12.5,cy-5,3.2,6.5);c.fillRect(cx+9.3,cy-5,3.2,6.5);
+  // Olhos azuis e sobrancelhas
+  c.fillStyle='#0284c7';c.beginPath();c.arc(cx-4.2+d,cy-1,1.6,0,Math.PI*2);c.arc(cx+4.2+d,cy-1,1.6,0,Math.PI*2);c.fill();
+  c.strokeStyle='#331e11';c.lineWidth=1.8;c.beginPath();
+  c.moveTo(cx-7+d,cy-3.5);c.lineTo(cx-2+d,cy-2.2);
+  c.moveTo(cx+7+d,cy-3.5);c.lineTo(cx+2+d,cy-2.2);c.stroke();
+  // Nariz
+  c.fillStyle='#e0a370';c.beginPath();c.arc(cx+d,cy+1.5,2.5,0,Math.PI*2);c.fill();
+  // Boca
+  c.fillStyle='#7f1d1d';c.beginPath();c.ellipse(cx+d/2,cy+6,4.8,2.3,0,0,Math.PI);c.fill();
+  c.fillStyle='#ffffff';c.fillRect(cx-3+d/2,cy+6,6,1.2);
+ }
+ // Acessórios extras da loja
+ if(e.a=='a1'){c.fillStyle='#0f172a';c.fillRect(cx-9+d,cy-4,8,4.5);c.fillRect(cx+1+d,cy-4,8,4.5);c.fillRect(cx-1+d,cy-3,2,1.5)}
+ if(e.a=='a2'){c.fillStyle='#3b2a1a';c.beginPath();c.ellipse(cx-3.5+d,cy+2.5,3.5,1.8,0,0,7);c.fill();c.beginPath();c.ellipse(cx+3.5+d,cy+2.5,3.5,1.8,0,0,7);c.fill()}
+ if(e.a=='a3'){c.fillStyle='#f43f5e';c.beginPath();c.moveTo(cx,cy+13);c.lineTo(cx-7,cy+9);c.lineTo(cx-7,cy+17);c.closePath();c.fill();c.beginPath();c.moveTo(cx,cy+13);c.lineTo(cx+7,cy+9);c.lineTo(cx+7,cy+17);c.closePath();c.fill()}
+ // Chapéus
+ const h=e.h;
+ if(h=='h0'&&col=='r'){
+  // Chapéu Panamá padrão do Lula
+  c.fillStyle='#fef08a';c.beginPath();c.ellipse(cx,cy-8.5,15.5,4,0,0,Math.PI*2);c.fill();
+  c.strokeStyle='#ca8a04';c.lineWidth=1.2;c.stroke();
+  c.fillStyle='#fef08a';c.fillRect(cx-8,cy-15,16,7);
+  c.fillStyle='#991b1b';c.fillRect(cx-8,cy-10.5,16,2.2);
+ }
+ if(h=='h1'){c.fillStyle='#2563eb';c.beginPath();c.arc(cx,cy-9,10,Math.PI,0);c.fill();c.fillRect(cx-2,cy-10,14,3)}
+ if(h=='h2'){c.fillStyle='#111827';c.fillRect(cx-10,cy-14,20,3);c.fillRect(cx-6,cy-28,12,15);c.fillStyle='#dc2626';c.fillRect(cx-6,cy-18,12,3)}
+ if(h=='h3'){c.fillStyle=b;c.beginPath();c.moveTo(cx-11,cy-7);c.lineTo(cx-9,cy-22);c.lineTo(cx-2,cy-12);c.fill();c.beginPath();c.moveTo(cx+11,cy-7);c.lineTo(cx+9,cy-22);c.lineTo(cx+2,cy-12);c.fill()}
+ if(h=='h4'){c.fillStyle='#6d28d9';c.beginPath();c.moveTo(cx-12,cy-11);c.lineTo(cx+2,cy-35);c.lineTo(cx+12,cy-11);c.closePath();c.fill();c.fillRect(cx-15,cy-12,30,3);c.fillStyle='#facc15';c.fillRect(cx-1,cy-22,3,3)}
+ if(h=='h5'){c.fillStyle='#facc15';c.beginPath();c.moveTo(cx-9,cy-11);c.lineTo(cx-9,cy-23);c.lineTo(cx-4,cy-17);c.lineTo(cx,cy-25);c.lineTo(cx+4,cy-17);c.lineTo(cx+9,cy-23);c.lineTo(cx+9,cy-11);c.closePath();c.fill()}
+ c.restore();
+}
+const MN=document.getElementById('mn'),SH=document.getElementById('sh'),shc=document.getElementById('shc'),pvc=document.getElementById('pv').getContext('2d');
+let shChar='r';
+const PE={r:null,g:null};
+const cp=o=>({c:o.c,h:o.h,a:o.a});
+function costOf(e){let t=0;for(const k in CAT){if(!owned(e[k]))t+=price(e[k])}return t}
+function renderShop(){
+ if(!PE[shChar])PE[shChar]=cp(SAVE.eq[shChar]);
+ const pe=PE[shChar],eq=SAVE.eq[shChar];
+ document.getElementById('bk').textContent=SAVE.bank;
+ let h='';
+ for(const k in CAT){h+="<h3>"+CAT[k].n+"</h3><div class='grid'>";
+  CAT[k].it.forEach(([id,n,p])=>{
+   h+="<button class='it"+(pe[k]==id?" pv":"")+(eq[k]==id?" eq":"")+"' data-k='"+k+"' data-id='"+id+"'>"+n+"<small>"+(eq[k]==id?"✔ equipado":owned(id)?"seu":"💎 "+p)+"</small></button>"});
+  h+="</div>"}
+ shc.innerHTML=h;
+ const cost=costOf(pe),same=JSON.stringify(pe)==JSON.stringify(eq),bt=document.getElementById('pbuy');
+ document.getElementById('pcost').textContent=same?'Visual equipado':(cost?'Custa 💎 '+cost:'Você já tem tudo isso');
+ bt.disabled=same;bt.textContent=cost?'🛒 Comprar e equipar':'✅ Equipar';
+}
+shc.onclick=ev=>{const b=ev.target.closest('.it');if(!b)return;PE[shChar][b.dataset.k]=b.dataset.id;renderShop()};
+document.getElementById('pbuy').onclick=()=>{const pe=PE[shChar],cost=costOf(pe);
+ if(SAVE.bank<cost){document.getElementById('pcost').textContent='💎 insuficientes: faltam '+(cost-SAVE.bank);return}
+ SAVE.bank-=cost;for(const k in CAT)SAVE.own[pe[k]]=1;SAVE.eq[shChar]=cp(pe);persist();renderShop()};
+document.getElementById('pund').onclick=()=>{PE[shChar]=cp(SAVE.eq[shChar]);renderShop()};
+function tab(c){shChar=c;document.getElementById('tr').className=c=='r'?'on':'';document.getElementById('tg').className=c=='g'?'on':'';renderShop()}
+document.getElementById('tr').onclick=()=>tab('r');document.getElementById('tg').onclick=()=>tab('g');
+function showMenu(){state='menu';OV.style.display='none';SH.style.display='none';MN.style.display='flex';document.getElementById('mb2').textContent=SAVE.bank}
+document.getElementById('mj').onclick=()=>{MN.style.display='none';lv=0;dt=0;best=[];load(0,true);state='play'};
+document.getElementById('mp').onclick=()=>{MN.style.display='none';SH.style.display='flex';PE.r=PE.g=null;tab('r')};
+document.getElementById('sbk').onclick=showMenu;
+document.getElementById('hm').onclick=showMenu;
+function prev(){pvc.setTransform(1,0,0,1,0,0);pvc.clearRect(0,0,150,150);pvc.setTransform(4,0,0,4,0,0);drawChar(pvc,18.75,26,shChar,Math.sin(frame*.05)*.5,frame,PE[shChar]||SAVE.eq[shChar])}
+function loop(){if(state=='play')update();draw();if(SH.style.display!='none')prev();requestAnimationFrame(loop)}
+const instr='Cooperem para chegar às duas saídas!<br><br><b class="r">Lula</b>: W pula · A/D move · S puxa alavanca<br><b class="g">Bolsonaro</b>: ↑ pula · ←/→ move · ↓ puxa alavanca<br><br>Empurrem caixas, puxem alavancas e peguem as balsas.<br>Ganhem até 3 estrelas por fase.';
+document.getElementById('od').innerHTML=instr;
+load(0,true);showMenu();
+loop();
+</script>
+</body>
+</html>
